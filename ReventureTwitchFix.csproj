@@ -15,6 +15,11 @@
     <RootNamespace>ReventureTwitchFix</RootNamespace>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <!-- Inline variable declaration -->
+    <NoWarn>IDE0018</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
     <PackageReference Include="BepInEx.Core" Version="5.*" />

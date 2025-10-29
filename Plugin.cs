@@ -1,5 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
@@ -20,7 +21,10 @@ public class Plugin : BaseUnityPlugin
         Logger = base.Logger;
         Logger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
 
-        Harmony.CreateAndPatchAll(typeof(Plugin));
+        var harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
+
+        harmony.PatchAll(typeof(Plugin));
+        harmony.PatchAll(typeof(EmotePatch));
     }
 
     [HarmonyPatch(typeof(TwitchClient), "HandleIrcMessage")]
@@ -35,13 +39,40 @@ public class Plugin : BaseUnityPlugin
 
     [HarmonyPatch(typeof(TwitchClient), "HandlePrivMsg")]
     [HarmonyPrefix]
-    static void HandlePrivMsg(IrcMessage ircMessage)
+    static void HandlePrivMsgPrefix(IrcMessage ircMessage)
     {
         if (ircMessage.Hostmask.Equals("jtv!jtv@jtv.tmi.twitch.tv"))
         {
             return;
         }
 
-        ircMessage.Tags.Remove("emotes");
+        string emotesTag;
+
+        ircMessage.Tags.TryGetValue("emotes", out emotesTag);
+
+        if (string.IsNullOrEmpty(emotesTag))
+        {
+            return;
+        }
+
+        var newEmotesTagParts = emotesTag.Split('/').Select(emoteStr =>
+        {
+            var parts = emoteStr.Split(':');
+            var id = parts[0];
+            var indices = parts[1];
+            int newId;
+
+            if (!int.TryParse(id, out newId))
+            {
+                newId = EmotePatch.getFakeId(id);
+            }
+
+            return $"{newId}:{indices}";
+        });
+        var newEmotesTag = string.Join("/", newEmotesTagParts);
+
+        ircMessage.Tags["emotes"] = newEmotesTag;
+
+        Logger.LogInfo(">>> emotes tag: " + emotesTag);
     }
 }

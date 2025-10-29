@@ -21,6 +21,28 @@
     <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
     <PackageReference Include="UnityEngine.Modules" Version="2019.4.20" IncludeAssets="compile" />
   </ItemGroup>
+
+  <PropertyGroup>
+    <IsLinux>$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))</IsLinux> 
+    <IsWindows>$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))</IsWindows> 
+    <IsOSX>$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))</IsOSX> 
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <ReventureDir Condition="$(IsLinux)">$(HOME)/.local/share/Steam/steamapps/common/Reventure</ReventureDir>
+    <ReventureDir Condition="$(IsWindows)">C:/Program Files (x86)/Steam/steamapps/common/Reventure</ReventureDir>
+    <ReventureDir Condition="$(IsOSX)">TODO</ReventureDir>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <ReventureLibsDir>$(ReventureDir)/Reventure_Data/Managed</ReventureLibsDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="-"><HintPath>$(ReventureLibsDir)/Assembly-CSharp.dll</HintPath></Reference>
+    <Reference Include="TwitchLib.Client"><HintPath>$(ReventureLibsDir)/TwitchLib.Client.dll</HintPath></Reference>
+    <Reference Include="TwitchLib.Client.Models"><HintPath>$(ReventureLibsDir)/TwitchLib.Client.Models.dll</HintPath></Reference>
+  </ItemGroup>
   
   <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />

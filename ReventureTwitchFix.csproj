@@ -39,9 +39,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="-"><HintPath>$(ReventureLibsDir)/Assembly-CSharp.dll</HintPath></Reference>
-    <Reference Include="TwitchLib.Client"><HintPath>$(ReventureLibsDir)/TwitchLib.Client.dll</HintPath></Reference>
-    <Reference Include="TwitchLib.Client.Models"><HintPath>$(ReventureLibsDir)/TwitchLib.Client.Models.dll</HintPath></Reference>
+    <Reference Include="-">
+      <HintPath>$(ReventureLibsDir)/Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="TwitchLib.Client">
+      <HintPath>$(ReventureLibsDir)/TwitchLib.Client.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="TwitchLib.Client.Models">
+      <HintPath>$(ReventureLibsDir)/TwitchLib.Client.Models.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
   </ItemGroup>
   
   <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
